@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+@use "../node_modules/bulma/sass/" as bulma;
+
+html {
+  // override bulma's default behavior
+  overflow-y: auto;
+}
+
+.is-fullwidth {
+  width: 100%;
+  max-width: 100%;
+}
+
+.is-fullheight {
+  height: 100%;
+  max-height: 100%;
+}

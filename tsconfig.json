@@ -16,7 +16,8 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+    "plugins": [{"name": "typescript-plugin-toml"}]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
