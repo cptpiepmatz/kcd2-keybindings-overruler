@@ -1,0 +1,7 @@
+# This directory contains game resources needed to build the app.
+# These files are not included because I don’t have permission to share them.
+# You must extract them from your own game files.
+# Run `npm run extract-resources` to do that.
+
+*
+!.gitignore
