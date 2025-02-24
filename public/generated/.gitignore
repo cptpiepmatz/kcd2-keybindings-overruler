@@ -1,0 +1,6 @@
+# This directory contains generated files from the build process.
+# These files are hosted alongside the app.
+# They are derived from game files but don’t include them directly, only minimal content.
+
+*
+!.gitignore

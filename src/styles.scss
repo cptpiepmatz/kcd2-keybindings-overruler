@@ -1,3 +1,8 @@
+@forward "../node_modules/bulma/sass/utilities/" with (
+  $primary: #f1c405,
+  $fullhd: 1920px
+);
+
 @use "../node_modules/bulma/sass/" as bulma;
 
 html {

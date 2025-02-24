@@ -1,5 +1,9 @@
 {
   "name": "kcd2-keybindings-overruler",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cptpiepmatz/kcd2-keybindings-overruler"
+  },
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -17,6 +21,8 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "@ng-icons/core": "^30.3.0",
+    "@ng-icons/remixicon": "^30.3.0",
     "bulma": "^1.0.3",
     "fast-xml-parser": "^5.0.6",
     "rxjs": "~7.8.0",
@@ -30,6 +36,7 @@
     "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
     "esbuild-plugin-toml": "^0.0.1",
+    "smol-toml": "^1.3.1",
     "typescript": "~5.6.2",
     "typescript-plugin-toml": "^0.5.0",
     "yauzl-promise": "^4.0.0"

@@ -56,10 +56,13 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "plugins": [{
-              "path": "node_modules/esbuild-plugin-toml/index.js",
-              "options": {}
-            }]
+            "plugins": [
+              {
+                "path": "node_modules/esbuild-plugin-toml/index.js",
+                "options": {}
+              },
+              "scripts/prebuild.cjs"
+            ]
           },
           "configurations": {
             "production": {
@@ -86,7 +89,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-esbuild:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "kcd2-keybindings-overruler:build:production"

@@ -1,0 +1,133 @@
+<header class="has-background-primary" style="height: 4em;">
+  <div class="container is-fullhd">
+    <div class="columns m-0 is-mobile">
+      <div class="column">
+        <p class="title has-text-dark">KCD2 Keybindings Overruler</p>
+      </div>
+      <a 
+        [href]="repository"
+        target="_blank"
+        class="column is-narrow is-flex is-justify-content-center is-align-items-center" 
+        style="height: 4em; width: 4em; background-color: #010409;"
+      >
+        <ng-icon class="has-text-light" size="2.5em" name="remixGithubFill"></ng-icon>
+      </a>
+    </div>
+  </div>
+</header>
+<main>
+  @let translations = lang().translations();
+  <section class="columns">
+    <div class="column" style="max-width: 700px;">
+      <div class="card m-4 is-clipped">
+        <div class="card-content p-0">
+          <table class="table is-fullwidth is-striped">
+            <colgroup>
+              <col>
+              <col style="width: 4em;">
+              <col style="width: 16em;">
+            </colgroup>
+            <tbody>
+              @for (keybinding of keybindingsIter(); track keybinding[0]) {
+                <tr>
+                  <th style="vertical-align: middle;">
+                    {{translations?.[keybinding[1].uiName]}}
+                  </th>
+                  <td>
+                    <checkbox (selected)="keybinding[1].included.set($event)">
+                    </checkbox>
+                  </td>
+                  <td>
+                    <div class="buttons has-addons">
+                      @let slot0 = keybinding[1].slot0();
+                      @let content0 = translations?.["ui_key_" + slot0];
+                      @let visibility0 = content0 ? "unset" : "hidden";
+                      <button 
+                        class="button" 
+                        style="width: 7em"
+                        (click)="modalIsActive.set(true)"
+                        (click)="modalKeybinding.set(keybinding[0])"
+                      >
+                        <span [style.visibility]="visibility0">
+                          {{content0 ?? "O"}}
+                        </span>
+                      </button>
+  
+                      @let slot1 = keybinding[1].slot1();
+                      @let content1 = translations?.["ui_key_" + slot1];
+                      @let visibility1 = content1 ? "unset" : "hidden";
+                      <button 
+                        class="button" 
+                        style="width: 7em"
+                        (click)="modalIsActive.set(true)"
+                        (click)="modalKeybinding.set(keybinding[0])"
+                      >
+                        <span [style.visibility]="visibility1">
+                          {{content1 ?? "O"}}
+                        </span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="column m-4">
+      <div class="dropdown" [class.is-active]="langSelectDropdown()">
+        <div class="dropdown-trigger" (click)="langSelectDropdown.set(!langSelectDropdown())">
+          <button class="button">
+            <span class="icon">
+              <ng-icon name="remixTranslate2" size="1.4em"></ng-icon>
+            </span>
+            <span>Selected Language: {{lang().localizedName}}</span>
+            @if (langSelectDropdown()) {
+              <span class="icon">
+                <ng-icon name="remixArrowUpSLine" size="1.4em"></ng-icon>
+              </span>
+            } 
+            @else {
+              <span class="icon">
+                <ng-icon name="remixArrowDownSLine" size="1.4em"></ng-icon>
+              </span>
+            }
+          </button>
+        </div>
+        <div class="dropdown-menu" style="min-width: 100%;">
+          <div class="dropdown-content">
+            @for (lang of resources.langs | keyvalue; track lang.key) {
+              <a 
+                class="dropdown-item"
+                (click)="selectedLang.set(lang.key)"
+                (click)="langSelectDropdown.set(false)"
+              >{{lang.value.localizedName}}</a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" [class.is-active]="modalIsActive()">
+  <div class="modal-background" (click)="modalIsActive.set(false)"></div>
+  <div class="modal-content">
+    <div class="card">
+      <div class="card-content">
+        <input 
+          #input 
+          class="input" 
+          type="text" 
+          placeholder="Press Key for '{{modalKeybindingName()}}'"
+        />
+      </div>
+      <footer class="card-footer">
+        <a class="card-footer-item" style="color: unset">Reset</a>
+        <a class="card-footer-item" style="color: unset">Unset</a>
+      </footer>
+    </div>
+  </div>
+  <button class="modal-close is-large" (click)="modalIsActive.set(false)"></button>
+</div>

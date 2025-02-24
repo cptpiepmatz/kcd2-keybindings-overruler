@@ -1,0 +1,7 @@
+<button class="button" (click)="selected.set(!selected())">
+  <span class="icon is-large">
+    @if (selected()) {
+      <ng-icon name="remixCheckFill" size="1.5em"></ng-icon>
+    }
+  </span>
+</button>

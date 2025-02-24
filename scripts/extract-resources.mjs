@@ -36,7 +36,7 @@ for (let dirEntry of localizationFiles) {
 const gameDataFile = path.join(gameDir, "Data", "IPL_GameData.pak");
 const gameDataPkg = await yauzl.open(gameDataFile);
 const targetDir = path.join("resources", "Config");
-await fsPromises.mkdir(targetDir, {recursive: true});
+await fsPromises.mkdir(targetDir, { recursive: true });
 for await (const pkgEntry of gameDataPkg) {
   if (pkgEntry.filename != "Libs/Config/keybindSuperactions.xml") continue;
   const readStream = await pkgEntry.openReadStream();
