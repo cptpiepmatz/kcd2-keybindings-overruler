@@ -34,8 +34,7 @@
                     {{translations?.[keybinding[1].uiName]}}
                   </th>
                   <td>
-                    <checkbox (selected)="keybinding[1].included.set($event)">
-                    </checkbox>
+                    <checkbox [(selected)]="keybinding[1].included"></checkbox>
                   </td>
                   <td>
                     <div class="buttons has-addons">
@@ -47,6 +46,8 @@
                         style="width: 7em"
                         (click)="modalIsActive.set(true)"
                         (click)="modalKeybinding.set(keybinding[0])"
+                        (click)="modalValue.set(content0 ?? '')"
+                        (click)="modalSlot.set(0)"
                       >
                         <span [style.visibility]="visibility0">
                           {{content0 ?? "O"}}
@@ -61,6 +62,8 @@
                         style="width: 7em"
                         (click)="modalIsActive.set(true)"
                         (click)="modalKeybinding.set(keybinding[0])"
+                        (click)="modalValue.set(content1 ?? '')"
+                        (click)="modalSlot.set(1)"
                       >
                         <span [style.visibility]="visibility1">
                           {{content1 ?? "O"}}
@@ -115,18 +118,35 @@
   <div class="modal-background" (click)="modalIsActive.set(false)"></div>
   <div class="modal-content">
     <div class="card">
+      <div class="card-header">
+        <p class="card-header-title">Select Key for '{{modalKeybindingName()}}'</p>
+      </div>
       <div class="card-content">
         <input 
           #input 
-          class="input" 
+          class="input has-text-centered" 
           type="text" 
           placeholder="Press Key for '{{modalKeybindingName()}}'"
+          [value]="modalValue()"
+          (keydown)="onModalKeyboardEvent($event)"
+          (keyup)="onModalKeyboardEvent($event)"
+          (keypress)="onModalKeyboardEvent($event)"
+          (mousedown)="onModalMouseEvent($event)"
+          (wheel)="onModalWheelEvent($event)"
         />
       </div>
-      <footer class="card-footer">
-        <a class="card-footer-item" style="color: unset">Reset</a>
-        <a class="card-footer-item" style="color: unset">Unset</a>
-      </footer>
+      <div class="card-footer">
+        <a 
+          class="card-footer-item" 
+          style="color: unset"
+          (click)="onModalReset()"
+        >Reset</a>
+        <a 
+          class="card-footer-item" 
+          style="color: unset"
+          (click)="onModalUnset()"
+        >Unset</a>
+      </div>
     </div>
   </div>
   <button class="modal-close is-large" (click)="modalIsActive.set(false)"></button>

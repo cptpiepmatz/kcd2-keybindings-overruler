@@ -1,4 +1,4 @@
-import { Component, effect, output, signal } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { remixCheckFill } from "@ng-icons/remixicon";
 
@@ -10,10 +10,5 @@ import { remixCheckFill } from "@ng-icons/remixicon";
   providers: [provideIcons({remixCheckFill})]
 })
 export class CheckboxComponent {
-  readonly selected = signal(false);
-  readonly selectedEvent = output<boolean>({alias: "selected"});
-
-  constructor() {
-    effect(() => this.selectedEvent.emit(this.selected()));
-  }
+  readonly selected = model(false);
 }

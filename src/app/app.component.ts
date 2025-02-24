@@ -7,6 +7,7 @@ import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DOCUMENT, KeyValuePipe } from '@angular/common';
 import { fromEvent } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+import keyMapping from "../assets/browser-to-cryengine-keys.toml";
 
 interface Keybinding {
   uiName: string,
@@ -22,6 +23,10 @@ interface Keybinding {
   styles: `
     tr > * {
       vertical-align: middle;
+    }
+
+    input {
+      caret-color: transparent;
     }
   `,
   providers: [
@@ -47,8 +52,8 @@ export class AppComponent {
   protected modalIsActive = signal(false);
   protected modalKeybinding = signal("");
   protected modalKeybindingName = computed(() => this.computeModalKeybindingName());
-
-  protected keydown;
+  protected modalSlot = signal<0 | 1>(0);
+  protected modalValue = signal("");
 
   constructor(protected resources: ResourceService) {
     effect(() => {
@@ -71,13 +76,9 @@ export class AppComponent {
         setTimeout(() => this.modalInput().nativeElement.focus());
       }
     });
-
-    const document = inject(DOCUMENT);
-    this.keydown = toSignal(fromEvent<KeyboardEvent>(document, "keydown"));
-    // enable some kind of signal resetting here
   }
 
-  computeModalKeybindingName(): string | undefined {
+  protected computeModalKeybindingName(): string | undefined {
     let translations = this.lang().translations();
     if (!translations) return undefined;
 
@@ -87,7 +88,52 @@ export class AppComponent {
     return translations[keybinding.uiName];
   }
 
-  log(...input: any[]) {
+  protected log(...input: any[]) {
     console.log(...input);
   }
+
+  private updateModalKeybinding(value: string | null) {
+    this.modalIsActive.set(false);
+    const keybinding = this.keybindings[this.modalKeybinding()];
+    if (this.modalSlot() == 0) keybinding.slot0.set(value);
+    if (this.modalSlot() == 1) keybinding.slot1.set(value);
+    keybinding.included.set(true);
+  }
+  
+  protected onModalKeyboardEvent(event: KeyboardEvent) {
+    event.preventDefault();
+    if (event.type !== "keydown") return;
+    const key = keyMapping.keys[event.code];
+    this.updateModalKeybinding(key);
+  }
+  
+  protected onModalUnset() {
+    this.updateModalKeybinding(null);
+  }
+  
+  protected onModalReset() {
+    const defaultKeybinding = this.resources.defaultKeybindings()![this.modalKeybinding()];
+    const defaultControl = defaultKeybinding.controls[this.modalSlot()] ?? null;
+    this.updateModalKeybinding(defaultControl);
+  }
+
+  protected onModalMouseEvent(event: MouseEvent) {
+    event.preventDefault();
+    if (event.type !== "mousedown") return;
+    const key = keyMapping.keys["Mouse" + event.button];
+    this.updateModalKeybinding(key);
+  }
+
+  protected onModalWheelEvent(event: WheelEvent) {
+    event.preventDefault();
+
+    if (event.deltaY > 0) {
+      const key = keyMapping.keys["MouseWheelDown"];
+      this.updateModalKeybinding(key);
+    } else {
+      const key = keyMapping.keys["MouseWheelUp"];
+      this.updateModalKeybinding(key);
+    }
+  }
+  
 }
