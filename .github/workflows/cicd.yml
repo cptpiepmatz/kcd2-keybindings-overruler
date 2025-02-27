@@ -33,7 +33,7 @@ jobs:
         run: npm install --locked
       
       - name: Build App
-        run: npm run build --base-href kcd2-keybindings-overruler
+        run: npm run build -- --base-href ${{ github.event.repository.name }}
       
       - name: Upload Github Pages Artifact
         uses: actions/upload-pages-artifact@v3
