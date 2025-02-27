@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
-          repository: git@github.com:cptpiepmatz/kcd2-keybindings-overruler-resources.git
+          repository: cptpiepmatz/kcd2-keybindings-overruler-resources
           path: resources
           ssh-key: ${{ secrets.RESOURCES_DEPLOY_KEY }}
       - uses: volta-cli/action@v4
