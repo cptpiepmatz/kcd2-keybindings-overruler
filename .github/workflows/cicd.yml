@@ -1,0 +1,36 @@
+name: "continuous integration/deployment"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: volta-cli/action@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package.json', 'package-lock.json')}}
+      - run: npm install --locked
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ github.workspace }}/dist/kcd2-keybindings-overruler/browser
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
