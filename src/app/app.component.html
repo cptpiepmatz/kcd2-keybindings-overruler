@@ -1,5 +1,14 @@
 <main class="m-4">
-  <div class="m-6"></div>
+  <div class="is-flex is-justify-content-flex-end">
+    <a href="https://bulma.io" target="_blank">
+        <img
+          src="./made-with-bulma--white.png"
+          alt="Made with Bulma"
+          width="128"
+          height="24"
+        >
+      </a>
+  </div>
 
   <div class="container is-max-tablet content">
     <a href="https://github.com/cptpiepmatz" target="_blank">
@@ -241,6 +250,71 @@
   <button class="modal-close is-large" (click)="modalIsActive.set(false)"></button>
 </div>
 
-<footer class="footer has-background-dark">
-  lol
+<footer class="footer has-background-dark has-text-grey">
+  <div class="container">
+    <div class="columns">
+      <div class="column content">
+        <h5 class="has-text-grey">Disclaimer</h5>
+        <p>
+          This tool is <b>not affiliated</b> with Warhorse Studios, Deep Silver, 
+          or any other entity associated with <em>Kingdom Come: Deliverance II</em>. 
+          The code for this site does not access or expose any game files directly. 
+          While it helps modify keybindings, I <b>do not guarantee</b> that the 
+          generated  settings file will be fully correct or work flawlessly. 
+          Use at your own risk.
+        </p>
+      </div>
+      <div class="column content is-narrow">
+        <h5 class="has-text-grey">Some Links</h5>
+        <p>
+          <a 
+            href="https://store.steampowered.com/app/1771300/Kingdom_Come_Deliverance_II/" 
+            class="has-text-grey"
+            target="_blank"
+          >
+            <span class="icon-text">
+              <span class="icon">
+                <ng-icon name="remixSteamFill"></ng-icon>
+              </span>
+              <span><em>Get the Game on Steam</em></span>
+            </span>
+          </a>
+        </p>
+        <p>
+          <a 
+            href="https://github.com/cptpiepmatz/kcd2-keybindings-overruler" 
+            class="has-text-grey"
+            target="_blank"
+          >
+            <span class="icon-text">
+              <span class="icon">
+                <ng-icon name="remixGithubFill"></ng-icon>
+              </span>
+              <span><em>Check out the Source Code</em></span>
+            </span>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div class="has-text-centered">
+      <p>{{package.name}} v{{package.version}}</p>
+    </div>
+  
+    <div class="has-text-centered is-size-5">
+      Made with ❤️ by 
+      <a href="https://github.com/cptpiepmatz" class="has-text-grey" target="_blank">
+        <b>cptpiepmatz</b>
+      </a>
+      using 
+      <a href="https://angular.dev" class="has-text-grey" target="_blank">
+        <em>Angular</em>
+      </a>
+      and 
+      <a href="https://bulma.io" class="has-text-grey" target="_blank">
+        <em>Bulma</em>
+      </a>
+      .
+    </div>
+  </div>
 </footer>
