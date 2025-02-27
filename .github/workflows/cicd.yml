@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          token: ${{ secrets.RESOURCES_DEPLOY_KEY }}
+          ssh-key: ${{ secrets.RESOURCES_DEPLOY_KEY }}
       - uses: volta-cli/action@v4
       - uses: actions/cache@v4
         with:
