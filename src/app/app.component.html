@@ -247,6 +247,7 @@
             <button 
               class="button is-success is-fullwidth"
               [disabled]="!settingsXML()"
+              (click)="onExportFile()"
             >
               <span>Download</span>
               <span class="icon">
@@ -254,6 +255,11 @@
               </span>
             </button>
           </div>
+          <a 
+            class="is-hidden" 
+            #exportAnchor
+            download="attributes.xml"
+          ></a>
         </div>
       </ng-container>
       <ng-container copy>
@@ -265,8 +271,11 @@
         </div>
         <div>
           <div class="is-flex is-justify-content-center mx-3">
-            <button class="button is-info is-fullwidth">
-              <span>Copy to Clipboard</span>
+            <button 
+              class="button is-info is-fullwidth" 
+              (click)="onExportValue()"
+            >
+              <span #copyExportSpan>Copy to Clipboard</span>
               <span class="icon">
                 <ng-icon name="remixClipboardLine"></ng-icon>
               </span>

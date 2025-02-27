@@ -8,7 +8,7 @@ import { DOCUMENT, KeyValuePipe } from '@angular/common';
 import { fromEvent } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import keyMapping from "../assets/browser-to-cryengine-keys.toml";
-import { AttributesService, AttributesXML } from './attributes.service';
+import { AttributeKeybindings, AttributesService, AttributesXML } from './attributes.service';
 import packageJSON from "../../package.json";
 
 interface Keybinding {
@@ -42,6 +42,8 @@ export class AppComponent {
   protected settingsFile = signal<File | undefined>(undefined);
   protected settingsXML = signal<AttributesXML | undefined>(undefined);
   protected settingsAttribute = model<string>("");
+  protected copyExportSpan = viewChild.required<ElementRef<HTMLSpanElement>>("copyExportSpan");
+  protected exportAnchor = viewChild.required<ElementRef<HTMLAnchorElement>>("exportAnchor");
 
   protected selectedLang = signal("english");
   protected lang = computed(() => this.resources.langs[this.selectedLang()]);
@@ -178,6 +180,43 @@ export class AppComponent {
     let [file] = select.nativeElement.files!;
     select.nativeElement.value = "";
     this.settingsFile.set(file);
+  }
+
+  private buildAttributeValue(): string {
+    let toBuild: AttributeKeybindings = {};
+    for (let [key, controls] of Object.entries(this.keybindings)) {
+      if (!controls.included()) continue;
+      let slot0 = controls.slot0();
+      let slot1 = controls.slot1();
+      let control = [slot0, slot1].filter(slot => !!slot);
+      toBuild[key] = control as [] | [string] | [string, string];
+    }
+
+    return this.attributes.stringifyKeybindings(toBuild);
+  }
+
+  protected onExportValue() {
+    let value = this.buildAttributeValue();
+
+    let span = this.copyExportSpan();
+    navigator.clipboard.writeText(value)
+      .then(() => span.nativeElement.innerText = "Copied!")
+      .then(() => setTimeout(
+        () => span.nativeElement.innerText = "Copy to Clipboard", 
+        2000
+      ));
+  }
+
+  protected onExportFile() {
+    let value = this.buildAttributeValue();
+    let parsedXml = this.settingsXML();
+    if (!parsedXml) throw new Error("no parsed xml stored");
+    let content = this.attributes.exportXml(parsedXml, value);
+    let blob = new Blob([content], {type: "text/xml"});
+    let url = URL.createObjectURL(blob);
+    let anchor = this.exportAnchor();
+    anchor.nativeElement.href = url;
+    anchor.nativeElement.click();
   }
   
 }
