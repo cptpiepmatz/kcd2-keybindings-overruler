@@ -1,0 +1,33 @@
+@use "bulma/sass/utilities/mixins";
+
+tr > * {
+  vertical-align: middle;
+}
+
+input {
+  caret-color: transparent;
+}
+
+.interactive-grid {
+
+  &.has-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &.has-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  gap: var(--bulma-column-gap) calc(2 * var(--bulma-column-gap));
+
+  @include mixins.until(700px) {
+    & > * {
+      margin: var(--bulma-column-gap);
+    }
+    
+    display: unset;
+  }
+}

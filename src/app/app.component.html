@@ -39,66 +39,86 @@
   </div>
 
   <div class="container is-max-widescreen content pt-4 mb-0">
-    <div class="columns">
-      <div class="column">
-        <h6>Import Your Settings</h6>
-        <p>Use the file picker to open your existing settings file.
-          Navigate to:
-          <span class="is-clickable" (click)="copyFilePath()">
-            📂
-            <code>%USERPROFILE%\Saved Games\kingdomcome2\profiles\default</code> 
-            (<em #copyPathText>Click to copy the path</em>).
-          </span>
-          Select <code>attributes.xml</code>, and the tool will load your current keybindings automatically.
-        </p>
-      </div>
-      <div class="column">
-        <h6>Copy Yourself</h6>
-        <p>
-          Manually open your <code>attributes.xml</code> and find the <code>keybinds_settings</code> attribute. 
-          Copy its entire value exactly as it is and paste it into the input field. 
-          The tool will parse it so you can start editing.
-        </p>
-      </div>
-      <div class="column">
-        <h6>Start with Defaults</h6>
-        <p>
-          Skip importing a file - just start fresh! 
-          The keybindings table is pre-filled with the default controls, 
-          and you can modify them however you like.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <div class="container is-max-widescreen">
-    @let mx = "mx-3";
-    <div class="columns">
-      <div class="column">
-        <div class="is-flex is-justify-content-center" [classList]="mx">
-          <div class="buttons has-addons is-fullwidth m-0">
-            <button class="button is-flex-grow-1" (click)="filePicker.click()">
-              No file selected
-            </button>
-            <button class="button is-danger">
-              <span class="icon">
-                <ng-icon name="remixResetLeftLine"></ng-icon>
-              </span>
-            </button>
+    <div class="interactive-grid has-3">
+      <ng-container import>
+        <div class="pt-2">
+          <h6>Import Your Settings</h6>
+          <p>Use the file picker to open your existing settings file.
+            Navigate to:
+            <span class="is-clickable" (click)="copyFilePath()">
+              📂
+              <code>%USERPROFILE%\Saved Games\kingdomcome2\profiles\default</code> 
+              (<em #copyPathText>Click to copy the path</em>).
+            </span>
+            Select <code>attributes.xml</code>, and the tool will load your current keybindings automatically.
+          </p>
+        </div>
+        <div>
+          <div class="is-flex is-justify-content-center mx-3">
+            <div class="buttons has-addons is-fullwidth m-0">
+              <button class="button is-flex-grow-1" (click)="filePicker.click()">
+                @let file = settingsFile();
+                @if (file) { {{file.name}} }
+                @else {No file selected}
+              </button>
+              <button 
+                class="button is-danger" 
+                (click)="settingsFile.set(undefined)"
+              >
+                <span class="icon">
+                  <ng-icon name="remixResetLeftLine"></ng-icon>
+                </span>
+              </button>
+            </div>
+            <input 
+              #filePicker 
+              type="file" 
+              class="is-hidden" 
+              accept="text/xml"
+              (change)="onFileSelectorChangeEvent()"
+            />
           </div>
-          <input #filePicker type="file" class="is-hidden" accept="text/xml" >
         </div>
-      </div>
-      <div class="column">
-        <div class="is-flex is-justify-content-center" [classList]="mx">
-          <input class="input" type="text" placeholder="'keybinds_settings' value">
+      </ng-container>
+      <ng-container copy>
+        <div class="pt-2">
+          <h6>Copy Yourself</h6>
+          <p>
+            Manually open your <code>attributes.xml</code> and find the <code>keybinds_settings</code> attribute. 
+            Copy its entire value exactly as it is and paste it into the input field. 
+            The tool will parse it so you can start editing.
+          </p>
         </div>
-      </div>
-      <div class="column">
-        <div class="is-flex is-justify-content-center" [classList]="mx">
-          <button class="button is-warning is-fullwidth">Reset Imports</button>
+        <div>
+          <div class="is-flex is-justify-content-center mx-3">
+            <input 
+              class="input" 
+              type="text" 
+              placeholder="'keybinds_settings' value"
+              [(value)]="settingsAttribute"
+            >
+          </div>
         </div>
-      </div>
+      </ng-container>
+      <ng-container default>
+        <div class="pt-2">
+          <h6>Start with Defaults</h6>
+          <p>
+            Skip importing a file - just start fresh! 
+            The keybindings table is pre-filled with the default controls, 
+            and you can modify them however you like.
+          </p>
+        </div>
+        <div>
+          <div class="is-flex is-justify-content-center mx-3">
+            <button 
+              class="button is-warning is-fullwidth"
+              (click)="settingsFile.set(undefined)"
+              (click)="settingsAttribute.set('')"
+            >Reset Imports</button>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 
@@ -210,9 +230,55 @@
       </div>
     </div>
   </div>
+
+  <div class="container is-max-tablet pb-5 content">
+    <div class="interactive-grid has-2">
+      <ng-container download>
+        <div class="pt-5">
+          <h6>Download Your New Settings</h6>
+          <p>(Available only if you imported a file)</p>
+          <p>
+            Download the modified <code>attributes.xml</code> and replace your old one. 
+            Make a backup before overwriting if you're unsure!
+          </p>
+        </div>
+        <div>
+          <div class="is-flex is-justify-content-center mx-3">
+            <button 
+              class="button is-success is-fullwidth"
+              [disabled]="!settingsXML()"
+            >
+              <span>Download</span>
+              <span class="icon">
+                <ng-icon name="remixDownloadLine"></ng-icon>
+              </span>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container copy>
+        <div class="pt-5">
+          <h6>Copy New Value</h6>
+          Copy the updated <code>keybinds_settings</code> value and paste it back 
+          into the same position in <code>attributes.xml</code> where you 
+          originally found it.
+        </div>
+        <div>
+          <div class="is-flex is-justify-content-center mx-3">
+            <button class="button is-info is-fullwidth">
+              <span>Copy to Clipboard</span>
+              <span class="icon">
+                <ng-icon name="remixClipboardLine"></ng-icon>
+              </span>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </main>
 
-<div class="modal" [class.is-active]="modalIsActive()">
+<aside class="modal" [class.is-active]="modalIsActive()">
   <div class="modal-background" (click)="modalIsActive.set(false)"></div>
   <div class="modal-content">
     <div class="card">
@@ -248,7 +314,7 @@
     </div>
   </div>
   <button class="modal-close is-large" (click)="modalIsActive.set(false)"></button>
-</div>
+</aside>
 
 <footer class="footer has-background-dark has-text-grey">
   <div class="container">

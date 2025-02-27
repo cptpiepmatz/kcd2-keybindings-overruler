@@ -1,14 +1,14 @@
-import { Component, computed, effect, ElementRef, inject, Signal, signal, viewChild, WritableSignal } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, model, Signal, signal, viewChild, WritableSignal } from '@angular/core';
 import { ResourceService } from './resource.service';
 import { provideIcons, NgIconComponent } from "@ng-icons/core";
-import { remixGithubFill, remixArrowDownSLine, remixArrowUpSLine, remixTranslate2, remixClipboardLine, remixResetLeftLine, remixSteamFill } from "@ng-icons/remixicon";
+import { remixGithubFill, remixArrowDownSLine, remixArrowUpSLine, remixTranslate2, remixClipboardLine, remixResetLeftLine, remixSteamFill, remixDownloadLine } from "@ng-icons/remixicon";
 import { repository } from "../../package.json";
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DOCUMENT, KeyValuePipe } from '@angular/common';
 import { fromEvent } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import keyMapping from "../assets/browser-to-cryengine-keys.toml";
-import { AttributesService } from './attributes.service';
+import { AttributesService, AttributesXML } from './attributes.service';
 import packageJSON from "../../package.json";
 
 interface Keybinding {
@@ -22,15 +22,7 @@ interface Keybinding {
   selector: 'app-root',
   imports: [NgIconComponent, CheckboxComponent, KeyValuePipe],
   templateUrl: './app.component.html',
-  styles: `
-    tr > * {
-      vertical-align: middle;
-    }
-
-    input {
-      caret-color: transparent;
-    }
-  `,
+  styleUrl: "./app.component.scss",
   providers: [
     provideIcons({
       remixArrowDownSLine,
@@ -40,11 +32,17 @@ interface Keybinding {
       remixTranslate2,
       remixResetLeftLine,
       remixSteamFill,
+      remixDownloadLine,
     })
   ]
 })
 export class AppComponent {
   protected copyPathText = viewChild.required<ElementRef<HTMLElement>>("copyPathText");
+  protected fileSelect = viewChild.required<ElementRef<HTMLInputElement>>("filePicker");
+  protected settingsFile = signal<File | undefined>(undefined);
+  protected settingsXML = signal<AttributesXML | undefined>(undefined);
+  protected settingsAttribute = model<string>("");
+
   protected selectedLang = signal("english");
   protected lang = computed(() => this.resources.langs[this.selectedLang()]);
   protected package = packageJSON;
@@ -64,12 +62,18 @@ export class AppComponent {
 
   constructor(protected resources: ResourceService, protected attributes: AttributesService) {
 
-    // const [imported, importedKeybindsSettings] = attributes.importXml(attributesXML);
-    // if (importedKeybindsSettings) {
-    //   const parsed = attributes.parseKeybindings(importedKeybindsSettings);
-    //   const stringified = attributes.stringifyKeybindings(parsed);
-    //   const exported = attributes.exportXml(imported, stringified);
-    // }
+    effect(async () => {
+      let file = this.settingsFile();
+      if (!file) {
+        this.settingsXML.set(undefined);
+        return;
+      }
+
+      let xml = await file.text();
+      const [imported, importedKeybindsSettings] = attributes.importXml(xml);
+      this.settingsXML.set(imported);
+      this.settingsAttribute.set(importedKeybindsSettings ?? "");
+    });
 
     effect(() => {
       let defaultKeybindings = this.resources.defaultKeybindings();
@@ -89,6 +93,19 @@ export class AppComponent {
     effect(() => {
       if (this.modalIsActive()) {
         setTimeout(() => this.modalInput().nativeElement.focus());
+      }
+    });
+
+    effect(() => {
+      let attribute = this.settingsAttribute();
+      if (!attribute) return;
+
+      let parsedKeybindings = this.attributes.parseKeybindings(attribute);
+      for (let [key, controls] of Object.entries(parsedKeybindings)) {
+        let keybinding = this.keybindings[key];
+        keybinding.included.set(true);
+        keybinding.slot0.set(controls[0] ?? null);
+        keybinding.slot1.set(controls[1] ?? null);
       }
     });
   }
@@ -154,6 +171,13 @@ export class AppComponent {
   protected copyFilePath() {
     navigator.clipboard.writeText("%USERPROFILE%\\Saved Games\\kingdomcome2\\profiles\\default");
     this.copyPathText().nativeElement.innerText = "Copied!";
+  }
+
+  protected onFileSelectorChangeEvent() {
+    let select = this.fileSelect();
+    let [file] = select.nativeElement.files!;
+    select.nativeElement.value = "";
+    this.settingsFile.set(file);
   }
   
 }
