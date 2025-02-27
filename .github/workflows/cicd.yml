@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          submodules: true
+          repository: git@github.com:cptpiepmatz/kcd2-keybindings-overruler-resources.git
+          path: resources
           ssh-key: ${{ secrets.RESOURCES_DEPLOY_KEY }}
       - uses: volta-cli/action@v4
       - uses: actions/cache@v4
