@@ -9,24 +9,44 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Checkout Resources
+        uses: actions/checkout@v4
         with:
           repository: cptpiepmatz/kcd2-keybindings-overruler-resources
           path: resources
           ssh-key: ${{ secrets.RESOURCES_DEPLOY_KEY }}
-      - uses: volta-cli/action@v4
-      - uses: actions/cache@v4
+      
+      - name: Set up Node via Volta
+        uses: volta-cli/action@v4
+
+      - name: Cache Node Modules
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package.json', 'package-lock.json')}}
-      - run: npm install --locked
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      
+      - name: Install Node Modules
+        run: npm install --locked
+      
+      - name: Build App
+        run: npm run build
+      
+      - name: Upload Github Pages Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ github.workspace }}/dist/kcd2-keybindings-overruler/browser
 
   deploy:
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
