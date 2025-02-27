@@ -1,13 +1,14 @@
 import { Component, computed, effect, ElementRef, inject, Signal, signal, viewChild, WritableSignal } from '@angular/core';
 import { ResourceService } from './resource.service';
 import { provideIcons, NgIconComponent } from "@ng-icons/core";
-import { remixGithubFill, remixArrowDownSLine, remixArrowUpSLine, remixTranslate2 } from "@ng-icons/remixicon";
+import { remixGithubFill, remixArrowDownSLine, remixArrowUpSLine, remixTranslate2, remixClipboardLine, remixResetLeftLine } from "@ng-icons/remixicon";
 import { repository } from "../../package.json";
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { DOCUMENT, KeyValuePipe } from '@angular/common';
 import { fromEvent } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import keyMapping from "../assets/browser-to-cryengine-keys.toml";
+import { AttributesService } from './attributes.service';
 
 interface Keybinding {
   uiName: string,
@@ -31,14 +32,17 @@ interface Keybinding {
   `,
   providers: [
     provideIcons({
-      remixGithubFill, 
       remixArrowDownSLine,
       remixArrowUpSLine, 
-      remixTranslate2
+      remixClipboardLine,
+      remixGithubFill, 
+      remixTranslate2,
+      remixResetLeftLine,
     })
   ]
 })
 export class AppComponent {
+  protected copyPathText = viewChild.required<ElementRef<HTMLElement>>("copyPathText");
   protected selectedLang = signal("english");
   protected lang = computed(() => this.resources.langs[this.selectedLang()]);
 
@@ -55,7 +59,15 @@ export class AppComponent {
   protected modalSlot = signal<0 | 1>(0);
   protected modalValue = signal("");
 
-  constructor(protected resources: ResourceService) {
+  constructor(protected resources: ResourceService, protected attributes: AttributesService) {
+
+    // const [imported, importedKeybindsSettings] = attributes.importXml(attributesXML);
+    // if (importedKeybindsSettings) {
+    //   const parsed = attributes.parseKeybindings(importedKeybindsSettings);
+    //   const stringified = attributes.stringifyKeybindings(parsed);
+    //   const exported = attributes.exportXml(imported, stringified);
+    // }
+
     effect(() => {
       let defaultKeybindings = this.resources.defaultKeybindings();
       if (!defaultKeybindings) return;
@@ -134,6 +146,11 @@ export class AppComponent {
       const key = keyMapping.keys["MouseWheelUp"];
       this.updateModalKeybinding(key);
     }
+  }
+
+  protected copyFilePath() {
+    navigator.clipboard.writeText("%USERPROFILE%\\Saved Games\\kingdomcome2\\profiles\\default");
+    this.copyPathText().nativeElement.innerText = "Copied!";
   }
   
 }
