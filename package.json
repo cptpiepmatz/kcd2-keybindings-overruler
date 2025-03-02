@@ -5,6 +5,7 @@
     "url": "https://github.com/cptpiepmatz/kcd2-keybindings-overruler"
   },
   "version": "0.1.0-dev",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
