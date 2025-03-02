@@ -9,9 +9,9 @@
 
 <div align="center">
 
-  ![Version](https://img.shields.io/github/package-json/v/cptpiepmatz/kcd2-keybindings-overruler?style=for-the-badge)  
-  ![License](https://img.shields.io/github/license/cptpiepmatz/kcd2-keybindings-overruler?style=for-the-badge)  
-  ![CI](https://img.shields.io/github/actions/workflow/status/cptpiepmatz/kcd2-keybindings-overruler/cicd.yml?style=for-the-badge&logo=github&label=CI)  
+  ![Version](https://img.shields.io/github/package-json/v/cptpiepmatz/kcd2-keybindings-overruler?style=for-the-badge)
+  ![License](https://img.shields.io/github/license/cptpiepmatz/kcd2-keybindings-overruler?style=for-the-badge)
+  ![CI](https://img.shields.io/github/actions/workflow/status/cptpiepmatz/kcd2-keybindings-overruler/cicd.yml?style=for-the-badge&logo=github&label=CI)
 
 </div>  
 
